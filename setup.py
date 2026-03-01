@@ -20,7 +20,7 @@ def get_requirements(file_path:str)->List[str]:
 
         
 setup(
-    name = "end-to-end-ml-project",
+    name = "Student-performnce-indicator_end-to-end-ml-project",
     author= "sreeman",
     author_email= "sreemanbitsmech@gmail.com",
     packages= find_packages(),
