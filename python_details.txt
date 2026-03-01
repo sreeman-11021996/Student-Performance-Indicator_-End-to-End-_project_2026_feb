@@ -10,3 +10,8 @@ Context manager : opening and closing files, Unlocing and locking shared memory
                         do operation {write(...)}
 
 
+jupyter Notebook in any browser : 
+    jupyter notebook --no-browser
+    jupyter notebook --browser=edge
+    jupyter notebook --browser=iexplore
+
