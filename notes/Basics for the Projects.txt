@@ -9,6 +9,10 @@ Launching Vscode instance - >code .
 2. Creating an environment & install packages :
 
 cmd terminal> conda create -p venv python==3.8 -y
+
+cmd treminal> conda env config vars set CONDA_PROMPT_MODIFIER="(studentml)"
+# create a shortcut for the path based virtual environment
+
 cmd terminal> conda activate venv/
 ----------------------------------------------------------------------------
 3. clone and sync GitHub
@@ -29,4 +33,6 @@ cmd terminal (venv)> git push -u origin main
   Create setup.py {to create the application as a package and even deploy in pypi}
 
   Create requirements.txt {all pckages needed to be installed while implementing the project}
+  cmd terminal (venv)> pip install -r requirements.txt
+  # install all the requirements
 ----------------------------------------------------------------------------
