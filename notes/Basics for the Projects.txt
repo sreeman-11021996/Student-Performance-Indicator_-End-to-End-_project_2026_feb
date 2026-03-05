@@ -48,4 +48,4 @@ cmd terminal (venv)>python -m ipykernel install --user --name your_env_name --di
     -> The --name is an internal identifier, and the --display-name is what you’ll see 
        in the Jupyter interface. After this, whenever you open Jupyter, you can select that 
        kernel, and it will run from the environment you created in VS Code.
-       ----------------------------------------------------------------------------
+----------------------------------------------------------------------------
