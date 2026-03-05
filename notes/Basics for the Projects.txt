@@ -36,3 +36,16 @@ cmd terminal (venv)> git push -u origin main
   cmd terminal (venv)> pip install -r requirements.txt
   # install all the requirements
 ----------------------------------------------------------------------------
+
+5. Jupyter notebook : kernel
+
+cmd terminal (venv)>python -m ipykernel install --user --name your_env_name --display-name "Your Env Name"
+    -> It tells Jupyter to register your virtual environment as a new kernel. 
+       Basically, you're giving Jupyter a "shortcut" so it knows that this environment 
+       is a valid place to run notebooks.
+    -> The --user flag makes it install the kernel spec locally (just for your user), 
+       so it doesn’t require admin permissions.
+    -> The --name is an internal identifier, and the --display-name is what you’ll see 
+       in the Jupyter interface. After this, whenever you open Jupyter, you can select that 
+       kernel, and it will run from the environment you created in VS Code.
+       ----------------------------------------------------------------------------
