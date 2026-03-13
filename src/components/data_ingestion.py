@@ -13,10 +13,15 @@ from dataclasses import dataclass
 # Data Ingestion Config : input
 @dataclass
 class Data_Ingestion_Config:
-    artifact_dir : str = ARTIFACT_DIR
-    raw_data_path : str = os.path.join(ARTIFACT_DIR, RAW_DATA_FILENAME)
-    train_data_path : str = os.path.join(ARTIFACT_DIR, TRAIN_DATA_FiILENAME)
-    test_data_path : str = os.path.join(ARTIFACT_DIR, TEST_DATA_FILENAME)
+    artifact_dir : str = os.path.join(ARTIFACT_DIR,DATA_INGESTION_DIR)
+    raw_data_path : str = os.path.join(artifact_dir, RAW_DATA_FILENAME)
+    train_data_path : str = os.path.join(artifact_dir, TRAIN_DATA_FiILENAME)
+    test_data_path : str = os.path.join(artifact_dir, TEST_DATA_FILENAME)
+    
+@dataclass
+class Data_Ingestion_Artifact:
+    train_data_path : str
+    test_data_path : str
     
 
 # Data Ingestion Component
@@ -48,12 +53,13 @@ class Data_Ingestion:
             test_set.to_csv(self.ingestion_config.test_data_path)
             logging.info(f"Saved test data in dir : {self.ingestion_config.test_data_path}")
             
+            ingestion_artifact = Data_Ingestion_Artifact(
+                train_data_path=self.ingestion_config.train_data_path,
+                test_data_path=self.ingestion_config.test_data_path
+                )
             logging.info(f"Inmgestion of the data is completed")
             
-            return (
-                self.ingestion_config.train_data_path,
-                self.ingestion_config.test_data_path
-            )
+            return ingestion_artifact
         
         except Exception as e:
             raise CustomException(e,sys)
