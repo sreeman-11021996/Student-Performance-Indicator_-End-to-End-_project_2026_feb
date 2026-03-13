@@ -5,7 +5,7 @@ ROOT_DIR = os.getcwd()
 
 # -------- Config --------
 # Data Ingestion Config
-ARTIFACT_DIR = 'artifact'
+ARTIFACT_DIR = 'artifacts'
 RAW_DATA_FILENAME = 'raw_data'
 TRAIN_DATA_FiILENAME = 'train'
 TEST_DATA_FILENAME = 'test'
