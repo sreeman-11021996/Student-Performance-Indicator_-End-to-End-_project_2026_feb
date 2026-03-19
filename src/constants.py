@@ -19,6 +19,7 @@ TEST_SIZE = 0.2
 # -------- Config --------
 # Data Transformation Config
 DATA_TRANSFORMATION_DIR = 'data_transformation'
+PREPROCESSED_OBJ_FILENAME = 'preprocessed_obj.pkl'
 TRANSFORMED_TRAIN_DATA_FiILENAME = 'train_transformed'
 TRANSFORMED_TEST_DATA_FiILENAME = 'test_transformed'
 
