@@ -1,7 +1,16 @@
 import os,sys
+from datetime import datetime
 
 
-ROOT_DIR = os.getcwd()
+# cwd/config/config.yaml
+ROOT_DIR = os.getcwd() 
+CONFIG_DIR = 'config'
+CONFIG_FILE_NAME = 'config.yaml'
+CONFIG_FILE_PATH = os.path.join(ROOT_DIR,CONFIG_DIR,CONFIG_FILE_NAME)
+
+# time_stamp
+CURRENT_TIME_STAMP = f"{datetime.now().strftime('%Y-%m-%d__%H-%M-%S')}"
+
 ARTIFACT_DIR = 'artifacts'
 
 
@@ -20,8 +29,8 @@ TEST_SIZE = 0.2
 # Data Transformation Config
 DATA_TRANSFORMATION_DIR = 'data_transformation'
 PREPROCESSED_OBJ_FILENAME = 'preprocessed_obj.pkl'
-TRANSFORMED_TRAIN_DATA_FiILENAME = 'train_transformed'
-TRANSFORMED_TEST_DATA_FiILENAME = 'test_transformed'
+TRANSFORMED_TRAIN_DATA_FiILENAME = 'train_transformed.npz'
+TRANSFORMED_TEST_DATA_FiILENAME = 'test_transformed.npz'
 
 TARGET_COLUMN = 'math score'
 

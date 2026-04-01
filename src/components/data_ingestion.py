@@ -10,16 +10,17 @@ from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 
 
-# Data Ingestion Config : input
+# Data Ingestion Config : input (where to save files)
 @dataclass
 class Data_Ingestion_Config:
-    artifact_dir : str = os.path.join(ARTIFACT_DIR,DATA_INGESTION_DIR)
+    # artifact/time_stamp/data_ingestion/...
+    artifact_dir : str = os.path.join(ARTIFACT_DIR, CURRENT_TIME_STAMP, DATA_INGESTION_DIR)
     raw_data_path : str = os.path.join(artifact_dir, RAW_DATA_FILENAME)
     train_data_path : str = os.path.join(artifact_dir, TRAIN_DATA_FiILENAME)
     test_data_path : str = os.path.join(artifact_dir, TEST_DATA_FILENAME)
     
     
-# Data Ingestion Artifact : output
+# Data Ingestion Artifact : output (save files)
 @dataclass
 class Data_Ingestion_Artifact:
     train_data_path : str
@@ -64,5 +65,5 @@ class Data_Ingestion:
             return data_ingestion_artifact
         
         except Exception as e:
-            raise CustomException(e,sys) from None
+            raise CustomException(e) from None
         

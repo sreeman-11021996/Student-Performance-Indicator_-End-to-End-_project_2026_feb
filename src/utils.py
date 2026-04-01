@@ -8,6 +8,8 @@ import pandas as pd
 import numpy as np
 import dill
 
+
+
 def get_categorical_columns (data:pd.DataFrame)->list[str]:
     """Return a list of column names that are categorical."""
     try:
@@ -15,7 +17,7 @@ def get_categorical_columns (data:pd.DataFrame)->list[str]:
         return cat_cols
     
     except Exception as e:
-        raise CustomException(e,sys) from None
+        raise CustomException(e) from None
 
 
 
@@ -26,7 +28,7 @@ def get_numerical_columns(data:pd.DataFrame)->list[str]:
         return num_cols
     
     except Exception as e:
-        raise CustomException(e,sys) from None
+        raise CustomException(e) from None
  
  
     
@@ -37,11 +39,11 @@ def get_X_and_y (data:pd.DataFrame, target_column:str)->tuple[pd.DataFrame, pd.S
         return X, Y
     
     except Exception as e:
-        raise CustomException(e,sys) from None
+        raise CustomException(e) from None
 
 
 
-def save_object(object:any, file_path:str):
+def save_object(object:object, file_path:str):
     try:
         dir_path = os.path.dirname(file_path)
         
@@ -52,7 +54,7 @@ def save_object(object:any, file_path:str):
             dill.dump(object, file_obj)
     
     except Exception as e:
-        raise CustomException(e,sys) from None
+        raise CustomException(e) from None
     
     
     
@@ -63,7 +65,7 @@ def load_object(file_path:str)-> any:
             return dill.load(file_obj)
     
     except Exception as e:
-        raise CustomException(e,sys) from None
+        raise CustomException(e) from None
     
     
     
@@ -83,7 +85,7 @@ def save_numpy_array_data(np_array:np.ndarray, file_path:str):
             np.save(file_obj, np_array)
     
     except Exception as e:
-        raise CustomException(e,sys) from None
+        raise CustomException(e) from None
     
     
     
@@ -94,4 +96,4 @@ def load_numpy_array_data(file_path:str)-> np.ndarray:
             return np.load(file_obj)
     
     except Exception as e:
-        raise CustomException(e,sys) from None
+        raise CustomException(e) from None

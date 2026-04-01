@@ -20,17 +20,18 @@ import numpy as np
 from dataclasses import dataclass
 
 
-# Data Transformation Config : input
+# Data Transformation Config : input (where to save files)
 @dataclass
 class Data_Transformation_Config:
-    transformed_dir : str = os.path.join(ARTIFACT_DIR,DATA_TRANSFORMATION_DIR)
-    preprocessed_obj_file_path : str = os.path.join(transformed_dir,PREPROCESSED_OBJ_FILENAME)
-    transformed_train_file_path : str = os.path.join(transformed_dir,TRANSFORMED_TRAIN_DATA_FiILENAME)
-    transformed_test_file_path : str = os.path.join(transformed_dir,TRANSFORMED_TEST_DATA_FiILENAME)
+    # artifact/time_stamp/data_transformation
+    artifact_dir : str = os.path.join(ARTIFACT_DIR, CURRENT_TIME_STAMP, DATA_TRANSFORMATION_DIR)
+    preprocessed_obj_file_path : str = os.path.join(artifact_dir,PREPROCESSED_OBJ_FILENAME)
+    transformed_train_file_path : str = os.path.join(artifact_dir,TRANSFORMED_TRAIN_DATA_FiILENAME)
+    transformed_test_file_path : str = os.path.join(artifact_dir,TRANSFORMED_TEST_DATA_FiILENAME)
     # .....
     
     
-# Data Transformation Artifact : output
+# Data Transformation Artifact : output (save files)
 @dataclass
 class Data_Transformation_Artifact:
     preprocessed_obj_file_path : str
@@ -89,7 +90,7 @@ class Data_Transformation:
             return preprocessor
         
         except Exception as e:
-            raise CustomException(e,sys) from None
+            raise CustomException(e) from None
         
     
     
@@ -123,7 +124,7 @@ class Data_Transformation:
             
             
             # get the file paths to train_arr, test_arr, preprocessed_obj
-            os.makedirs(self.data_transformation_config.transformed_dir, exist_ok=True)
+            os.makedirs(self.data_transformation_config.artifact_dir, exist_ok=True)
             train_arr_file_path = self.data_transformation_config.transformed_train_file_path
             test_arr_file_path = self.data_transformation_config.transformed_test_file_path
             preprocessing_obj_file_path = self.data_transformation_config.preprocessed_obj_file_path
@@ -149,4 +150,4 @@ class Data_Transformation:
             return data_transformation_artifact
         
         except Exception as e:
-            raise CustomException(e,sys) from None
+            raise CustomException(e) from None
