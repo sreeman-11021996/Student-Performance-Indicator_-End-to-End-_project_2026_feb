@@ -12,6 +12,7 @@ CONFIG_FILE_PATH = os.path.join(ROOT_DIR,CONFIG_DIR,CONFIG_FILE_NAME)
 CURRENT_TIME_STAMP = f"{datetime.now().strftime('%Y-%m-%d__%H-%M-%S')}"
 
 ARTIFACT_DIR = 'artifacts'
+PREDICTION_DIR = 'predictions'
 
 
 # -------- Config --------
@@ -28,9 +29,25 @@ TEST_SIZE = 0.2
 # -------- Config --------
 # Data Transformation Config
 DATA_TRANSFORMATION_DIR = 'data_transformation'
-PREPROCESSED_OBJ_FILENAME = 'preprocessed_obj.pkl'
+PREPROCESSED_OBJ_FILENAME = 'preprocessed.pkl'
 TRANSFORMED_TRAIN_DATA_FiILENAME = 'train_transformed.npz'
 TRANSFORMED_TEST_DATA_FiILENAME = 'test_transformed.npz'
 
 TARGET_COLUMN = 'math score'
 
+
+# -------- Config --------
+# Model Trainer Config
+MODEL_TRAINER_DIR = 'model_trainer'
+MODEL_FILENAME = 'model.pkl'
+
+
+
+# -------- Config --------
+# Prediction Config
+PREDICTION_DIR = 'prediction'
+PREDICTION_TIME_STAMP = '2026-xx-xx__xx-xx-xx'
+PREPROCESSED_OBJ_FILENAME = 'preprocessed.pkl'
+MODEL_FILENAME = 'model.pkl'
+
+PREDICTION_FILE_NAME = 'y_prediction.npz'   # predictions/xxxx-xx-xx__xx-xx-xx/y_prediction.npz

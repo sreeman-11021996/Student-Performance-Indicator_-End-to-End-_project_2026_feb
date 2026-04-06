@@ -43,7 +43,10 @@ class Data_Transformation:
     def __init__(self, data_ingestion_artifact:Data_Ingestion_Artifact):
         self.data_ingestion_artifact = data_ingestion_artifact
         self.data_transformation_config = Data_Transformation_Config() 
-       
+    
+    # Check imbalance in data
+    # def check_data_imbalance () -> checks for imbalance in data & returns balanced data   
+    
            
     def get_data_transformer_object(self, data:pd.DataFrame)->ColumnTransformer:
         """Gives me the data transformation object to apply on data
@@ -53,6 +56,11 @@ class Data_Transformation:
 
         Returns:
             ColumnTransformer: preprocessor
+            
+        Transformation:
+            Missing Values
+            Scaling data
+            categorical - One hot encoding
         """
         try:
             # get categorical & numerical columns
@@ -93,7 +101,8 @@ class Data_Transformation:
             raise CustomException(e) from None
         
     
-    
+
+
     def initiate_data_transforamtion(self)->Data_Transformation_Artifact:       
         logging.info("Entered the data transformation method or component")
         try:            

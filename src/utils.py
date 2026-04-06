@@ -1,4 +1,5 @@
-import os, sys
+import os
+from typing import Any
 
 from src.exception import CustomException
 from src.logger import logging
@@ -58,7 +59,7 @@ def save_object(object:object, file_path:str):
     
     
     
-def load_object(file_path:str)-> any:
+def load_object(file_path:str)-> Any:
     try:
         # read the file in binary
         with open(file_path, "rb") as file_obj:
