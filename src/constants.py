@@ -44,12 +44,12 @@ TRAINED_MODEL_FILENAME = 'model.pkl'
 MODELS = 'models'
 CVAL_R2_SCORE = 'cval_r2_score'
 OVERFIT_GAP = 'overfit_gap'
-RMSE = 'rmse'
 CVAL_R2_SCORE_STD = 'cval_r2_score_std'
+TEST_R2_SCORE = 'test_r2_score'
 
 # -------- Component --------
 BASE_R2_SCORE = 0.6
-OVERFIT_GAP = 0.1
+BASE_OVERFIT_GAP = 0.1
 
 
 
