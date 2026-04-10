@@ -10,10 +10,16 @@ Launching Vscode instance - >code .
 
 cmd terminal> conda create -p venv python==3.8 -y
 
-cmd treminal> conda env config vars set CONDA_PROMPT_MODIFIER="(studentml)"
+cmd treminal> conda env config vars set CONDA_PROMPT_MODIFIER="(virtual_env)"
 # create a shortcut for the path based virtual environment
 
 cmd terminal> conda activate venv/
+
+
+# remove the env prompts
+conda env config vars unset CONDA_PROMPT_MODIFIER -n base
+conda env config vars unset CONDA_PROMPT_MODIFIER -n cnn_venv  
+conda env config vars unset CONDA_PROMPT_MODIFIER -n ml_base
 ----------------------------------------------------------------------------
 3. clone and sync GitHub
 

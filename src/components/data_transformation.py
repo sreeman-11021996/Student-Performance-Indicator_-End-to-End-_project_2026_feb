@@ -2,8 +2,7 @@ import os, sys
 
 from src.components.data_ingestion import Data_Ingestion_Artifact
 from src.constants import *
-from src.utils import get_categorical_columns, get_numerical_columns, get_X_and_y, \
-    save_object, save_numpy_array_data
+from src.utils import save_object, save_numpy_array_data
 
 from src.exception import CustomException
 from src.logger import logging
@@ -47,7 +46,49 @@ class Data_Transformation:
     # Check imbalance in data
     # def check_data_imbalance () -> checks for imbalance in data & returns balanced data   
     
-           
+    
+    @staticmethod
+    def get_categorical_columns (data:pd.DataFrame)->list[str]:
+        """Return a list of column names that are categorical."""
+        try:
+            cat_cols = data.select_dtypes(include='object').columns
+            return cat_cols
+        
+        except Exception as e:
+            raise CustomException(e) from None
+
+
+    @staticmethod
+    def get_numerical_columns (data:pd.DataFrame)->list[str]:
+        """Return a list of column names that are numerical."""
+        try:
+            num_cols = data.select_dtypes(exclude='object').columns
+            return num_cols
+        
+        except Exception as e:
+            raise CustomException(e) from None
+    
+    
+    @staticmethod     
+    def separate_features_and_target (data:pd.DataFrame, target_column:str)->tuple[pd.DataFrame, pd.Series]:
+        """
+        Args:
+            data (pd.DataFrame): complete dataframe
+            target_column (str):
+
+        Returns:
+            X : Feature Dataframe
+            y : target Series
+        """
+        try:
+            X = data.drop(columns=[target_column],axis=1)
+            Y = data[target_column]
+            return X, Y
+        
+        except Exception as e:
+            raise CustomException(e) from None
+
+    
     def get_data_transformer_object(self, data:pd.DataFrame)->ColumnTransformer:
         """Gives me the data transformation object to apply on data
 
@@ -64,8 +105,8 @@ class Data_Transformation:
         """
         try:
             # get categorical & numerical columns
-            cat_features = get_categorical_columns(data = data)
-            num_features = get_numerical_columns(data = data)
+            cat_features = self.get_categorical_columns(data = data)
+            num_features = self.get_numerical_columns(data = data)
             
             # create categorical and numerical pipelines
             cat_pipeline = Pipeline(
@@ -101,8 +142,6 @@ class Data_Transformation:
             raise CustomException(e) from None
         
     
-
-
     def initiate_data_transforamtion(self)->Data_Transformation_Artifact:       
         logging.info("Entered the data transformation method or component")
         try:            
@@ -111,8 +150,10 @@ class Data_Transformation:
             logging.info("Reading the train and test files into Data Frames")
             
             # seperate the dependent features and target column in train and test
-            input_feature_train_df, target_feature_train_df = get_X_and_y(data=train_df, target_column=TARGET_COLUMN)
-            input_feature_test_df, target_feature_test_df = get_X_and_y(data=test_df, target_column=TARGET_COLUMN)
+            input_feature_train_df, target_feature_train_df = self.separate_features_and_target(
+                                                                data=train_df, target_column=TARGET_COLUMN)
+            input_feature_test_df, target_feature_test_df = self.separate_features_and_target(
+                                                                data=test_df, target_column=TARGET_COLUMN)
             logging.info("Seperating the train and test data's into (input_feature_train_df, target_feature_train_df) and "
                 "(input_feature_test_df, target_feature_test_df)")
             
