@@ -7,4 +7,5 @@ catboost
 xgboost
 ipykernel
 dill
+pyyaml
 # -e .
