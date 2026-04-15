@@ -3,9 +3,9 @@ import yaml
 from collections import defaultdict
 from typing import Any, List, Tuple, Optional
 
-from exception import CustomException
-from logger import logging
-from constants import *
+from src.exception import CustomException
+from src.logger import logging
+from src.constants import *
 
 import numpy as np
 from dataclasses import dataclass, field
@@ -434,7 +434,7 @@ class Model_Factory:
         except Exception as e:
             raise CustomException(e) from e
         
-    def initialize_best_models_list(self, grid_search_cv_results: dict)->None:
+    def initiate_best_models_list(self, grid_search_cv_results: dict)->None:
         try:
             # compute the best grid models list
             for model_number, grid_search_result in grid_search_cv_results.items():
@@ -465,7 +465,7 @@ class Model_Factory:
             logging.info(f"Performed Grid Search CV on all the untuned models")
             
             # 3. Get the best grid search cv models
-            self.initialize_best_models_list(grid_search_cv_results=grid_search_cv_results)
+            self.initiate_best_models_list(grid_search_cv_results=grid_search_cv_results)
             logging.info(f"Computed the best model parameters for each model using grid search cv in a list")
         
         except Exception as e:

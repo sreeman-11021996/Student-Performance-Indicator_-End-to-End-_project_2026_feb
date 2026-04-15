@@ -128,6 +128,7 @@ class Model_Trainer:
         except Exception as e:
             raise CustomException(e) from None
 
+
     
     @staticmethod
     def get_best_model_name (trained_models:dict, base_r2_score= BASE_R2_SCORE, 
@@ -162,7 +163,6 @@ class Model_Trainer:
 
         except Exception as e:
             raise CustomException(e) from None
-
 
 
             
@@ -208,6 +208,7 @@ class Model_Trainer:
         
         except Exception as e:
             raise CustomException(e) from None
+
                
         
     def initiate_model_trainer(self)-> Model_Trainer_Artifact:
@@ -239,11 +240,11 @@ class Model_Trainer:
             
             # evaluate the models dict
             logging.info(f"Start evaluation of all the models")
-            trained_models_report = evaluate_models(x_train=x_train, y_train=y_train, models=models)
+            trained_models_report = self.calculate_metrics(x_train=x_train, y_train=y_train, models=models)
             
             # get best model name
             logging.info("Start the best model comparision")
-            best_model_name = get_best_model_name(trained_models=trained_models_report)
+            best_model_name = self.get_best_model_name(trained_models=trained_models_report)
             
             # create model trainer artifact
             logging.info(f"Start the model trainer artifact creation")
