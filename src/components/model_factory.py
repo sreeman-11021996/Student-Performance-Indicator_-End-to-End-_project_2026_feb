@@ -126,7 +126,7 @@ class Model_Factory:
             if file_path is None:
                 raise ValueError("Config path is given as None")
             
-            with open(file_path, 'r') as yaml_file_obj:
+            with open(file_path, 'r',  encoding='utf-8') as yaml_file_obj:
                 model_config = yaml.safe_load(yaml_file_obj)
             
             return model_config
@@ -191,12 +191,12 @@ class Model_Factory:
             module_name = model_config[MODULE_KEY]
             class_name = model_config[CLASS_KEY]
             model_class = self.get_model_class_reference(module_name=module_name, class_name=class_name)
-            base_model = model_class()            
+            model = model_class()            
             
             # 2. Set fixed parameters
             if PARAM_KEY in model_config:
                 model_property = model_config[PARAM_KEY]  
-                model = self.set_model_class_properties(model_obj=base_model, property_data=model_property)
+                model = self.set_model_class_properties(model_obj=model, property_data=model_property)
             
             # 3. Get grid search parameters 
             model_grid_search_parameters = model_config[SEARCH_PARAM_GRID_KEY]
