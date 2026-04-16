@@ -73,9 +73,9 @@ MODEL_NUMBER_KEY = 'model_serial_number'
 # Grid Search CV 
 GRID_SEARCH_RESULT_LIST_KEY = 'grid_search_result_list'
 MODEL_KEY = 'model'
-TEST_R2_MEAN_KEY = 'test_r2_mean'
-TRAIN_R2_MEAN_KEY = 'train_r2_mean'
-TEST_R2_STD_KEY = 'test_r2_std'
+MEAN_TEST_R2_KEY = 'mean_test_score'
+MEAN_TRAIN_R2_KEY = 'mean_train_score'
+STD_TEST_R2_KEY = 'std_test_score'
 
 # Grid Searched Model class
 VAL_R2_KEY = 'val_r2_score'

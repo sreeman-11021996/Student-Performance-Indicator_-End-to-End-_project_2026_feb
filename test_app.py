@@ -23,13 +23,13 @@ if __name__ == "__main__":
             f"Train Array File Path : {data_transformation_artifact.train_arr_file_path}\n"
             f"Test Array File Path : {data_transformation_artifact.test_arr_file_path}\n\n")
     
-      model_trainer = Model_Trainer(data_transformation_artifact=data_transformation_artifact)
+      """model_trainer = Model_Trainer(data_transformation_artifact=data_transformation_artifact)
       model_trainer_artifact = model_trainer.initiate_model_trainer()
     
       print("Model Trainer Completed \n"
             f"Trained Model Name : {model_trainer_artifact.trained_model_name}\n"
             f"Trained Model File Path : {model_trainer_artifact.trained_model_file_path}\n"
-            f"Trained model metrics : {model_trainer_artifact.trained_model_metrics}\n\n")
+            f"Trained model metrics : {model_trainer_artifact.trained_model_metrics}\n\n")"""
       
       train_file_path = data_transformation_artifact.train_arr_file_path
       test_file_path = data_transformation_artifact.test_arr_file_path
@@ -37,7 +37,8 @@ if __name__ == "__main__":
                                                     train_file_path=train_file_path, 
                                                     test_file_path=test_file_path)
     
-      model_config_filepath = "config\model.yaml"
+    
+      model_config_filepath = "config\model_1.yaml"
       model_factory = Model_Factory(model_config_file_path=model_config_filepath)
       model_factory.initiate_model_factory(input_feature=x_train, output_feature=y_train)
       print("Modle Factory Completed \n"

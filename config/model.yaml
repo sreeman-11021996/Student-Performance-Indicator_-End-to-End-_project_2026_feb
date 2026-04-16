@@ -9,7 +9,7 @@ grid_search:
   params:
     cv: 5                    # 5-fold CV for robust student data
     verbose: 1               # Progress tracking
-    n_jobs: -1               # Parallel processing
+    n_jobs: 1               # single processing
     return_train_score: true # Overfitting detection
 
 model_selection:
@@ -142,7 +142,7 @@ model_selection:
         - 0.5
         - 1.0
 
-  # 9. XGBoost (model_8) - Production-grade booster ⭐
+  # 9. XGBoost (model_8) - Production-grade booster 
   model_8:
     module: xgboost
     class: XGBRegressor

@@ -1,0 +1,185 @@
+# model.yaml - Student Performance Indicator (End-to-End ML Project)
+# ================================================================
+# Predicts student scores using 10 regression models with GridSearchCV
+# Compatible with your ModelFactory pipeline
+
+grid_search:
+  module: sklearn.model_selection
+  class: GridSearchCV
+  params:
+    cv: 5                    # 5-fold CV for robust student data
+    verbose: 1               # Progress tracking
+    n_jobs: -1               # single processing
+    return_train_score: true # Overfitting detection
+
+model_selection:
+  # 1. Linear Regression (model_0) - Simple baseline
+  model_0:
+    module: sklearn.linear_model
+    class: LinearRegression
+    search_param_grid:
+      fit_intercept:
+        - true
+        - false
+
+  # 2. Ridge Regression (model_1) - L2 regularization
+  model_1:
+    module: sklearn.linear_model
+    class: Ridge
+    search_param_grid:
+      alpha:
+        - 0.1
+        - 1.0
+        - 10.0
+      solver:
+        - auto
+        - svd
+        - cholesky
+
+  # 3. Lasso Regression (model_2) - L1 regularization (feature selection)
+  model_2:
+    module: sklearn.linear_model
+    class: Lasso
+    search_param_grid:
+      alpha:
+        - 0.01
+        - 0.1
+        - 1.0
+      max_iter:
+        - 1000
+        - 2000
+        - 5000
+
+  # 4. K-Neighbors Regressor (model_3)
+  model_3:
+    module: sklearn.neighbors
+    class: KNeighborsRegressor
+    search_param_grid:
+      n_neighbors:
+        - 3
+        - 5
+        - 7
+        - 9
+      weights:
+        - uniform
+        - distance
+      metric:
+        - euclidean
+        - manhattan
+
+  # 5. Random Forest (model_4) - Bagging ensemble
+  model_4:
+    module: sklearn.ensemble
+    class: RandomForestRegressor
+    params:
+      random_state: 42
+      n_jobs: -1
+    search_param_grid:
+      n_estimators:
+        - 50
+        - 100
+        - 200
+      max_depth:
+        - 5
+        - 10
+        - null
+      min_samples_split:
+        - 2
+        - 5
+        - 10
+
+  # 6. Decision Tree (model_5) - Interpretable tree
+  model_5:
+    module: sklearn.tree
+    class: DecisionTreeRegressor
+    params:
+      criterion: squared_error
+      random_state: 42
+    search_param_grid:
+      max_depth:
+        - 3
+        - 5
+        - 7
+        - 10
+        - null
+      min_samples_leaf:
+        - 1
+        - 2
+        - 4
+
+  # 7. Gradient Boosting (model_6) - Boosting powerhouse
+  model_6:
+    module: sklearn.ensemble
+    class: GradientBoostingRegressor
+    params:
+      random_state: 42
+    search_param_grid:
+      n_estimators:
+        - 100
+        - 200
+      learning_rate:
+        - 0.01
+        - 0.1
+        - 0.2
+      max_depth:
+        - 3
+        - 4
+        - 5
+
+  # 8. AdaBoost (model_7) - Adaptive boosting
+  model_7:
+    module: sklearn.ensemble
+    class: AdaBoostRegressor
+    params:
+      random_state: 42
+    search_param_grid:
+      n_estimators:
+        - 50
+        - 100
+        - 200
+      learning_rate:
+        - 0.1
+        - 0.5
+        - 1.0
+
+  # 9. XGBoost (model_8) - Production-grade booster 
+  model_8:
+    module: xgboost
+    class: XGBRegressor
+    params:
+      random_state: 42
+      n_jobs: -1
+    search_param_grid:
+      n_estimators:
+        - 100
+        - 200
+        - 300
+      max_depth:
+        - 3
+        - 5
+        - 7
+      learning_rate:
+        - 0.01
+        - 0.1
+        - 0.2
+
+  # 10. CatBoost (model_9) - Categorical booster
+  model_9:
+    module: catboost
+    class: CatBoostRegressor
+    params:
+      random_state: 42
+      verbose: false
+      iterations: 200
+    search_param_grid:
+      learning_rate:
+        - 0.01
+        - 0.1
+      depth:
+        - 4
+        - 6
+        - 8
+      l2_leaf_reg:
+        - 1
+        - 3
+        - 5
