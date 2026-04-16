@@ -37,7 +37,8 @@ if __name__ == "__main__":
                                                     train_file_path=train_file_path, 
                                                     test_file_path=test_file_path)
     
-    
+      
+      # ** debugging from logs : catboost model not working!
       model_config_filepath = "config\model_cat.yaml"
       model_factory = Model_Factory(model_config_file_path=model_config_filepath)
       model_factory.initiate_model_factory(input_feature=x_train, output_feature=y_train)

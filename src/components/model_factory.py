@@ -240,7 +240,7 @@ class Model_Factory:
         
 
 
-    # ** debugging from logs
+    # ** debugging from logs : catboost model not working
     # 3. grid search cv list
     def grid_search_tuning_model(self, untuned_model:Untuned_Model, input_feature:np.ndarray,
                                output_feature:np.ndarray)->Tuple[str,dict]:
@@ -270,10 +270,21 @@ class Model_Factory:
             base_grid_search = model_class(estimator=estimator,param_grid=grid_search_parameters)  
             
             
-            # 2. Set fixed parameters : {cv, verbose}
-            grid_search_property = self.grid_search_details[PARAM_KEY]  
-            grid_search_cv = self.set_model_class_properties(model_obj=base_grid_search, property_data=grid_search_property)
+            # 3.a get properties of grid search from schema
+            grid_search_property: dict = self.grid_search_details[PARAM_KEY]  
             
+            # 3.b check for model specific grid search property updates
+            model_number = untuned_model.model_detail[MODEL_NUMBER_KEY]     # current model's model_number
+            model_config: dict = self.models_details[model_number]          # model config from the schema
+            
+            if GRID_SEARCH_PARAMS_KEY in model_config:
+                model_grid_search_property: dict = model_config[GRID_SEARCH_PARAMS_KEY]
+                grid_search_property.update(model_grid_search_property)
+            
+            
+            # 4. Set fixed grid search parameters : {cv, verbose, n_jobs}
+            grid_search_cv = self.set_model_class_properties(model_obj=base_grid_search, property_data=grid_search_property)            
+                        
             
             # ** debugging from logs
             combinations = list(ParameterGrid(grid_search_parameters))
@@ -284,7 +295,7 @@ class Model_Factory:
             start_time = time.time()
             
             
-            # 3. Train grid search cv
+            # 5. Train grid search cv
             grid_search_cv.fit(input_feature, output_feature)
             
             
@@ -293,7 +304,7 @@ class Model_Factory:
             logging.info(f"Completed {model_name} in {elapsed_time:.1f}s, Best R²: {grid_search_cv.best_score_:.3f}")
           
             
-            # 4. Get the result from grid search cv with metrics and parameters
+            # 6. Get the result from grid search cv with metrics and parameters
             grid_search_result: dict = grid_search_cv.cv_results_
             logging.info(f"Completed Grid Search CV on model : {model_name}")
                         

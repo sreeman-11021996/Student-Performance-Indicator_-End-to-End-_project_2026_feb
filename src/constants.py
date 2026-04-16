@@ -65,6 +65,7 @@ CLASS_KEY = 'class'
 PARAM_KEY = 'params'
 MODEL_SELECTION_KEY = 'model_selection'
 SEARCH_PARAM_GRID_KEY = "search_param_grid"
+GRID_SEARCH_PARAMS_KEY = 'grid_search_params'
 
 # Untuned Model class
 MODEL_NAME_KEY = 'model_name'
