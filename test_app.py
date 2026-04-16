@@ -38,7 +38,7 @@ if __name__ == "__main__":
                                                     test_file_path=test_file_path)
     
     
-      model_config_filepath = "config\model_1.yaml"
+      model_config_filepath = "config\model_cat.yaml"
       model_factory = Model_Factory(model_config_file_path=model_config_filepath)
       model_factory.initiate_model_factory(input_feature=x_train, output_feature=y_train)
       print("Modle Factory Completed \n"

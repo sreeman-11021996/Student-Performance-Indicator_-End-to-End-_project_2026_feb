@@ -1,0 +1,36 @@
+# model.yaml - Student Performance Indicator (End-to-End ML Project)
+# ================================================================
+# Predicts student scores using 10 regression models with GridSearchCV
+# Compatible with your ModelFactory pipeline
+
+grid_search:
+  module: sklearn.model_selection
+  class: GridSearchCV
+  params:
+    cv: 5                    # 5-fold CV for robust student data
+    verbose: 1               # Progress tracking
+    n_jobs: -1               # single processing
+    return_train_score: true # Overfitting detection
+
+model_selection:
+
+  # 10. CatBoost (model_9) - Categorical booster
+  model_9:
+    module: catboost
+    class: CatBoostRegressor
+    params:
+      random_state: 42
+      verbose: false
+      iterations: 200
+    search_param_grid:
+      learning_rate:
+        - 0.01
+        - 0.1
+      depth:
+        - 4
+        - 6
+        - 8
+      l2_leaf_reg:
+        - 1
+        - 3
+        - 5

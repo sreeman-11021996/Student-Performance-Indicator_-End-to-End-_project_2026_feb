@@ -1,5 +1,5 @@
 import os
-import yaml
+import time
 from collections import defaultdict
 from typing import Any, List, Tuple, Optional, Dict
 
@@ -9,9 +9,13 @@ from src.constants import *
 
 import numpy as np
 from dataclasses import dataclass, field
+import yaml
 
 # models
 import importlib
+
+# ** debugging from logs
+from sklearn.model_selection import ParameterGrid
 
 
 def get_sample_model_config_yaml_file(export_dir:str):
@@ -236,8 +240,9 @@ class Model_Factory:
         
 
 
+    # ** debugging from logs
     # 3. grid search cv list
-    def tune_single_model(self, untuned_model:Untuned_Model, input_feature:np.ndarray,
+    def grid_search_tuning_model(self, untuned_model:Untuned_Model, input_feature:np.ndarray,
                                output_feature:np.ndarray)->Tuple[str,dict]:
         """
         Compute the Grid Search CV on a single untuned model 
@@ -270,8 +275,22 @@ class Model_Factory:
             grid_search_cv = self.set_model_class_properties(model_obj=base_grid_search, property_data=grid_search_property)
             
             
+            # ** debugging from logs
+            combinations = list(ParameterGrid(grid_search_parameters))
+            logging.info(f"Starting GridSearchCV for {model_name}")
+            logging.info(f"{len(combinations)} combos x {grid_search_property['cv']} CV = {len(combinations)*5} fits")
+            logging.info(f"Grid size: {len(combinations)} combos")
+            logging.info(f"n_jobs: {grid_search_cv.n_jobs}, CV: {grid_search_cv.cv}")
+            start_time = time.time()
+            
+            
             # 3. Train grid search cv
             grid_search_cv.fit(input_feature, output_feature)
+            
+            
+            # ** debugging from logs
+            elapsed_time = time.time() - start_time
+            logging.info(f"Completed {model_name} in {elapsed_time:.1f}s, Best R²: {grid_search_cv.best_score_:.3f}")
           
             
             # 4. Get the result from grid search cv with metrics and parameters
@@ -280,10 +299,15 @@ class Model_Factory:
                         
             return (model_name, grid_search_result)
         
+        except KeyboardInterrupt:
+            logging.error(f"{model_name} interrupted - likely CatBoost hang")
+            raise KeyboardInterrupt("User interrupted training") from None
+        
         except Exception as e:
+            logging.error(f"{model_name} failed: {e}")
             raise CustomException(e) from e
         
-    def parse_cv_results(self, model_name:str, grid_search_result:dict)->List[Grid_Searched_Model]:
+    def parse_grid_search_cv_results(self, model_name:str, grid_search_result:dict)->List[Grid_Searched_Model]:
         """
         We take the result dictionary and convert it into a list of grid searched model instances
 
@@ -326,7 +350,7 @@ class Model_Factory:
         except Exception as e:
             raise CustomException(e) from e
         
-    def tune_all_models(self, input_feature:np.ndarray, output_feature:np.ndarray)->dict:
+    def grid_search_tuning_models(self, input_feature:np.ndarray, output_feature:np.ndarray)->dict:
         """
         Get the dictonary of grid search cv results 
         
@@ -346,11 +370,12 @@ class Model_Factory:
 
             for untuned_model in self.Untuned_Models_List:                
                 # 1. compute the grid search cv       
-                model_name, grid_search_result = self.tune_single_model(untuned_model=untuned_model,input_feature=input_feature,
-                                                            output_feature=output_feature)
+                model_name, grid_search_result = self.grid_search_tuning_model(untuned_model=untuned_model,
+                                                                               input_feature=input_feature,
+                                                                               output_feature=output_feature)
                 
                 # 2. get list of Grid_Searched_Model instances
-                grid_search_result_list: List[Grid_Searched_Model] = self.parse_cv_results(model_name = model_name,
+                grid_search_result_list: List[Grid_Searched_Model] = self.parse_grid_search_cv_results(model_name = model_name,
                                                                                            grid_search_result = grid_search_result)                          
                 logging.info(f"Created the Grid Searched Models List for Model : {model_name}\n")
 
@@ -489,7 +514,8 @@ class Model_Factory:
             logging.info(f"initiated the untuned models list")
             
             # 2. Do Grid Search CV for on untuned models list 
-            grid_search_cv_results: dict = self.tune_all_models(input_feature=input_feature, output_feature=output_feature)
+            grid_search_cv_results: dict = self.grid_search_tuning_models(input_feature=input_feature, 
+                                                                          output_feature=output_feature)
             logging.info(f"Performed Grid Search CV on all the untuned models")
             
             # 3. Get the best grid search cv models

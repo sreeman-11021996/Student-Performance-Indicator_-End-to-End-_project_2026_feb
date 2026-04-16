@@ -9,7 +9,7 @@ grid_search:
   params:
     cv: 5                    # 5-fold CV for robust student data
     verbose: 1               # Progress tracking
-    n_jobs: 1               # single processing
+    n_jobs: -1               # single processing
     return_train_score: true # Overfitting detection
 
 model_selection:
