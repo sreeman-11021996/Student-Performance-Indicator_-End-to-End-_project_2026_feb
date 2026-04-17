@@ -75,6 +75,7 @@ class Untuned_Model:
 @dataclass
 class Grid_Searched_Model:
     """ 
+    # model_number ? think about it
     best_parameters = grid searched best parameters for the model type (ex. decision tree)
     metrics = {'val_r2_score' : val, 'val_r2_std' : val, 'overfit_gap' : val}
     """
@@ -85,7 +86,7 @@ class Grid_Searched_Model:
 @dataclass
 class Best_Model:
     """
-    tuned_model : grid searched model with best parameters
+    tuned_model : grid searched model with best parameters (Untrained)
     model_detail : dict {'model_serial_number' : 'model_0', 'model_name' : "..."}
                     model_serial_number: ID like "model_0"
                     model_name: String like "sklearn.tree.DecisionTreeRegressor"    
@@ -98,21 +99,20 @@ class Best_Model:
     metrics : dict = field(default_factory= lambda: defaultdict(float))
     
     
-
+# ** optimization to be done
 class Model_Factory:
     
     def __init__(self, model_config_file_path:str):
         try:
             self.model_config = self.read_config_yaml_file(file_path=model_config_file_path)
             
-            # initialize grid search details
+            # 1. initialize grid search details
             self.grid_search_details: dict = self.model_config[GRID_SEARCH_KEY]
             
-            # initalize untuned model details
+            # 2. initalize untuned model details
             self.models_details: dict = self.model_config[MODEL_SELECTION_KEY]
             
-            # initialize the lists 
-            self.Grid_Searched_Best_Models_List: List[Best_Model] = []
+            # 3. initialize the untuned models lists 
             self.Untuned_Models_List: List[Untuned_Model] = []
              
         except Exception as e:
@@ -373,7 +373,7 @@ class Model_Factory:
             raise CustomException(e) from e
         
         
-
+    # ** Optimize in create_best_model()
     # 4. creating best models list 
     def create_best_model(self, model_number:str, grid_search_result:dict, base_r2=BASE_R2, 
                                      overfit_gap=OVERFIT_GAP)->Best_Model:
@@ -404,6 +404,7 @@ class Model_Factory:
             grid_models_list: List[Grid_Searched_Model] = grid_search_result[GRID_SEARCH_RESULT_LIST_KEY]
             best_model: Optional[Grid_Searched_Model] = None 
             
+            # ** optimizing if the loop takes in model numbers of the grid_model instead of the entire grid_model
             # 2. search for the best model in list 
             for grid_model in grid_models_list:
                 
@@ -463,9 +464,10 @@ class Model_Factory:
         except Exception as e:
             raise CustomException(e) from e
         
-    def initiate_best_models_list(self, grid_search_cv_results: dict)->None:
+    def initiate_best_models_list(self, grid_search_cv_results: dict)->List[Best_Model]:
         try:
             logging.info(f"Starting to initialize the best models from the Grid Searched Models foe all the models")
+            Grid_Searched_Best_Models_List: List[Best_Model] = []
             
             # compute the best grid models list
             for model_number, grid_search_result in grid_search_cv_results.items():
@@ -474,8 +476,10 @@ class Model_Factory:
                                         grid_search_result=grid_search_result)
                 
                 # 2. add to the list
-                self.Grid_Searched_Best_Models_List.append(best_grid_model)
-                
+                Grid_Searched_Best_Models_List.append(best_grid_model)
+            
+            return Grid_Searched_Best_Models_List
+        
         except Exception as e:
             raise CustomException(e) from e
 
@@ -496,8 +500,10 @@ class Model_Factory:
             logging.info(f"Performed Grid Search CV on all the untuned models")
             
             # 3. Get the best grid search cv models
-            self.initiate_best_models_list(grid_search_cv_results=grid_search_cv_results)
+            best_models_list: List[Best_Model] = self.initiate_best_models_list(grid_search_cv_results=grid_search_cv_results)
             logging.info(f"Computed the best model parameters for each model using grid search cv in a list")
+        
+            return best_models_list
         
         except Exception as e:
             raise CustomException(e) from e    

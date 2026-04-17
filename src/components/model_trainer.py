@@ -215,7 +215,7 @@ class Model_Trainer:
         try:
             logging.info(f"Initaited the model trainer component")
             
-            # get the train and test
+            # 1. get the train and test
             logging.info(f"start the loading of train and test arrays from artifacts dir")
             train_file_path = self.data_transformation_arifact.train_arr_file_path
             test_file_path = self.data_transformation_arifact.test_arr_file_path 
@@ -258,3 +258,5 @@ class Model_Trainer:
         
         except Exception as e:
             raise CustomException(e) from None
+        
+        

@@ -8,6 +8,9 @@ CONFIG_DIR = 'config'
 CONFIG_FILE_NAME = 'config.yaml'
 CONFIG_FILE_PATH = os.path.join(ROOT_DIR,CONFIG_DIR,CONFIG_FILE_NAME)
 
+# cwd/config/model.yaml
+MODEL_CONFIG_FILE_NAME = 'model.yaml'
+
 # time_stamp
 CURRENT_TIME_STAMP = f"{datetime.now().strftime('%Y-%m-%d__%H-%M-%S')}"
 
@@ -41,13 +44,16 @@ MODEL_TRAINER_DIR = 'model_trainer'
 TRAINED_MODEL_FILENAME = 'model.pkl'
 
 # -------- Artifact --------
-MODELS = 'models'
-CVAL_R2_SCORE = 'cval_r2_score'
-OVERFIT_GAP = 'overfit_gap'
-CVAL_R2_SCORE_STD = 'cval_r2_score_std'
-TEST_R2_SCORE = 'test_r2_score'
+MODELS_KEY = 'models'
+TEST_R2_SCORE_KEY = 'test_r2_score'
 
-# -------- Component --------
+# present in Model Factory group
+# VAL_R2_SCORE_KEY = 'val_r2_score'
+# OVERFIT_GAP_KEY = 'overfit_gap'
+# VAL_R2_SCORE_STD_KEY = 'val_r2_score_std'
+
+
+# -------- Component (delete for auto: check)--------
 BASE_R2_SCORE = 0.6
 BASE_OVERFIT_GAP = 0.1
 
