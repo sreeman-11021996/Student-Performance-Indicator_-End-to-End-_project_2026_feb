@@ -1,5 +1,4 @@
 import os
-import time
 from collections import defaultdict
 from typing import Any, List, Tuple, Optional, Dict
 
@@ -14,8 +13,6 @@ import yaml
 # models
 import importlib
 
-# ** debugging from logs
-from sklearn.model_selection import ParameterGrid
 
 
 def get_sample_model_config_yaml_file(export_dir:str):
@@ -169,9 +166,9 @@ class Model_Factory:
             if not isinstance(property_data, dict):
                 raise Exception("property_data parameter required to be dictionary")
             
-            for property_name, property_value in property_data.items():
-                setattr(model_obj, property_name, property_value)
-            
+            # safe parameters setting - for sklearn and other models
+            model_obj.set_params(**property_data)
+
             return model_obj
             
         except Exception as e:
@@ -240,7 +237,6 @@ class Model_Factory:
         
 
 
-    # ** debugging from logs : catboost model not working
     # 3. grid search cv list
     def grid_search_tuning_model(self, untuned_model:Untuned_Model, input_feature:np.ndarray,
                                output_feature:np.ndarray)->Tuple[str,dict]:
@@ -270,38 +266,13 @@ class Model_Factory:
             base_grid_search = model_class(estimator=estimator,param_grid=grid_search_parameters)  
             
             
-            # 3.a get properties of grid search from schema
+            # 3. Set fixed grid search parameters : {cv, verbose, n_jobs}
             grid_search_property: dict = self.grid_search_details[PARAM_KEY]  
-            
-            # 3.b check for model specific grid search property updates
-            model_number = untuned_model.model_detail[MODEL_NUMBER_KEY]     # current model's model_number
-            model_config: dict = self.models_details[model_number]          # model config from the schema
-            
-            if GRID_SEARCH_PARAMS_KEY in model_config:
-                model_grid_search_property: dict = model_config[GRID_SEARCH_PARAMS_KEY]
-                grid_search_property.update(model_grid_search_property)
-            
-            
-            # 4. Set fixed grid search parameters : {cv, verbose, n_jobs}
             grid_search_cv = self.set_model_class_properties(model_obj=base_grid_search, property_data=grid_search_property)            
                         
-            
-            # ** debugging from logs
-            combinations = list(ParameterGrid(grid_search_parameters))
-            logging.info(f"Starting GridSearchCV for {model_name}")
-            logging.info(f"{len(combinations)} combos x {grid_search_property['cv']} CV = {len(combinations)*5} fits")
-            logging.info(f"Grid size: {len(combinations)} combos")
-            logging.info(f"n_jobs: {grid_search_cv.n_jobs}, CV: {grid_search_cv.cv}")
-            start_time = time.time()
-            
-            
+                        
             # 5. Train grid search cv
             grid_search_cv.fit(input_feature, output_feature)
-            
-            
-            # ** debugging from logs
-            elapsed_time = time.time() - start_time
-            logging.info(f"Completed {model_name} in {elapsed_time:.1f}s, Best R²: {grid_search_cv.best_score_:.3f}")
           
             
             # 6. Get the result from grid search cv with metrics and parameters
@@ -310,12 +281,7 @@ class Model_Factory:
                         
             return (model_name, grid_search_result)
         
-        except KeyboardInterrupt:
-            logging.error(f"{model_name} interrupted - likely CatBoost hang")
-            raise KeyboardInterrupt("User interrupted training") from None
-        
         except Exception as e:
-            logging.error(f"{model_name} failed: {e}")
             raise CustomException(e) from e
         
     def parse_grid_search_cv_results(self, model_name:str, grid_search_result:dict)->List[Grid_Searched_Model]:
