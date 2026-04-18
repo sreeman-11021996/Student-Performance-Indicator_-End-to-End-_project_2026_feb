@@ -68,15 +68,15 @@ class Model_Trainer:
                                  f"has no best parameters that can be trained to get a R2 > 0.6")
                     continue
                 
+                
                 # 2.b assign the checking parameters
                 r2_score = model.metrics[VAL_R2_KEY]    
                 overfit_gap = model.metrics[OVERFIT_GAP_KEY]
-                if best_r2_score is None:
-                    best_r2_score = r2_score
-                    best_overfit_gap = overfit_gap 
+                     
                 
                 # 2.c check : greater r2 score wins (or) for same r2 score, lower overfit gap wins
-                if ((r2_score > best_r2_score)) or ((r2_score == best_r2_score) and (overfit_gap < best_overfit_gap)):
+                if ((best_r2_score is None) or (r2_score > best_r2_score)) or ((r2_score == best_r2_score) and 
+                                                                               (overfit_gap < best_overfit_gap)):
                     best_r2_score = r2_score
                     best_overfit_gap = overfit_gap
                     best_model = model

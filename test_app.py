@@ -1,6 +1,5 @@
 from src.components.data_ingestion import Data_Ingestion
 from src.components.data_transformation import Data_Transformation
-# from src.components.model_trainer import Model_Trainer
 from src.components.model_trainer_auto import Model_Trainer
 
 
@@ -29,7 +28,7 @@ if __name__ == "__main__":
  
       # ** Verify the best r2 from model trainer vs model trainer auto
       # ** Verify from the best models list if the final best model is accurate
-      # 3. Model Training
+      # 3. Model Training (Auto)
       model_trainer = Model_Trainer(data_transformation_artifact=data_transformation_artifact)
       model_trainer_artifact = model_trainer.initiate_model_trainer()
     
@@ -37,8 +36,10 @@ if __name__ == "__main__":
             f"Trained Model Name : {model_trainer_artifact.trained_model_name}\n"
             f"Trained Model File Path : {model_trainer_artifact.trained_model_file_path}\n"
             f"Trained model metrics : {model_trainer_artifact.trained_model_metrics}\n\n")
+
+
       
-      # ** optimization to be done
+      
       # 4. Model Factory
 
     

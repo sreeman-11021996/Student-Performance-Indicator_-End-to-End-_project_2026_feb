@@ -75,10 +75,11 @@ class Untuned_Model:
 @dataclass
 class Grid_Searched_Model:
     """ 
-    # model_number ? think about it
+    model_serial_number : 'model_0'
     best_parameters = grid searched best parameters for the model type (ex. decision tree)
     metrics = {'val_r2_score' : val, 'val_r2_std' : val, 'overfit_gap' : val}
     """
+    model_serial_number : str
     best_parameters : dict = field(default_factory=dict)
     metrics : dict = field(default_factory= lambda: defaultdict(float))
 
@@ -306,7 +307,8 @@ class Model_Factory:
             grid_searched_model_list : List[Grid_Searched_Model] = []
 
             for iter in range(grid_search_iter):
-                grid_searched_model = Grid_Searched_Model()
+                model_number = MODEL_NUMBER_STRING_KEY + str(iter)
+                grid_searched_model = Grid_Searched_Model(model_serial_number=model_number)
 
                 # metrics
                 grid_searched_model.metrics[VAL_R2_KEY] = test_r2_mean[iter]
@@ -404,7 +406,7 @@ class Model_Factory:
             grid_models_list: List[Grid_Searched_Model] = grid_search_result[GRID_SEARCH_RESULT_LIST_KEY]
             best_model: Optional[Grid_Searched_Model] = None 
             
-            # ** optimizing if the loop takes in model numbers of the grid_model instead of the entire grid_model
+            
             # 2. search for the best model in list 
             for grid_model in grid_models_list:
                 
@@ -502,7 +504,19 @@ class Model_Factory:
             # 3. Get the best grid search cv models
             best_models_list: List[Best_Model] = self.initiate_best_models_list(grid_search_cv_results=grid_search_cv_results)
             logging.info(f"Computed the best model parameters for each model using grid search cv in a list")
-        
+            
+            
+            # Log the best model list for view
+            logging.info(f"The Best Models List : \n")
+            for model in best_models_list:
+                logging.info(
+                    f"------------------------\n"
+                    f"Model Details : {model.model_detail}\n"
+                    f"Model validation r2 : {model.metrics[VAL_R2_KEY]:.4f}\n"
+                    f"Model Overfit Gap : {model.metrics[OVERFIT_GAP_KEY]:.4f}\n"
+                    f"------------------------\n"
+                )
+            
             return best_models_list
         
         except Exception as e:

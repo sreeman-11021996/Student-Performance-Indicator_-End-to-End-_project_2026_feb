@@ -41,7 +41,7 @@ class Model_Trainer_Config:
 @dataclass
 class Model_Trainer_Artifact:
     """
-    trained_model_metrics = {'cval_r2_score' : 0.0, 'overfit_gap' : 0.0, 'cval_r2_score_std' : 0.0, 
+    trained_model_metrics = {'val_r2_score' : 0.0, 'overfit_gap' : 0.0, 'val_r2_std' : 0.0, 
     'test_r2_score' : 0.0}
     field(default_factory= lambda : defaultdict(float)) == gives me a new dictionary with float values 
     every new instance.
@@ -77,7 +77,7 @@ class Model_Trainer:
             # loop all the models
             for model_name, model in models.items():
                     
-                # kfold cross val
+                # kfold cross validation
                 kf = KFold(n_splits=5, random_state=42, shuffle=True)
                 cval_r2_scores : list = []
                 train_r2_scores : list = []
@@ -113,14 +113,14 @@ class Model_Trainer:
     
                     
                 # store metrics in model report
-                trained_models_report[CVAL_R2_SCORE][model_name] = float(cval_r2_mean)
-                trained_models_report[OVERFIT_GAP][model_name] = float(overfit_gap)
-                trained_models_report[CVAL_R2_SCORE_STD][model_name] = float(cval_r2_std)
+                trained_models_report[VAL_R2_KEY][model_name] = float(cval_r2_mean)
+                trained_models_report[OVERFIT_GAP_KEY][model_name] = float(overfit_gap)
+                trained_models_report[VAL_R2_STD_KEY][model_name] = float(cval_r2_std)
                     
                 logging.info(f"\nmodel name : {model_name}"
-                            f"\ncval r2 mean : {cval_r2_mean}, {trained_models_report[CVAL_R2_SCORE][model_name]}"
-                            f"\noverfit gap : {overfit_gap}, {trained_models_report[OVERFIT_GAP][model_name]}"
-                            f"\ncval r2 std : {cval_r2_std}, {trained_models_report[CVAL_R2_SCORE_STD][model_name]}")  
+                            f"\ncval r2 mean : {cval_r2_mean}, {trained_models_report[VAL_R2_KEY][model_name]}"
+                            f"\noverfit gap : {overfit_gap}, {trained_models_report[OVERFIT_GAP_KEY][model_name]}"
+                            f"\ncval r2 std : {cval_r2_std}, {trained_models_report[VAL_R2_STD_KEY][model_name]}")  
                 
             logging.info(f"Completed the training of models and generated the model report")    
             return trained_models_report
@@ -136,9 +136,9 @@ class Model_Trainer:
         """
         Arguments : trained_models = {
             'models' : {'linear_reg' : linear model, ...},
-            'cval_r2_score' : {'linear_reg' : .., ...},
+            'val_r2_score' : {'linear_reg' : .., ...},
             'overfit_gap' : {...},
-            'cval_r2_score_std' : {...}
+            'val_r2_std' : {...}
             }
                 
         Return : best_model_name : str
@@ -148,8 +148,8 @@ class Model_Trainer:
             best_model_name : str = ''
             base_r2_score_local = base_r2_score
                 
-            for model_name, r2_score in trained_models[CVAL_R2_SCORE].items():    
-                overfit_gap = trained_models[OVERFIT_GAP][model_name]
+            for model_name, r2_score in trained_models[VAL_R2_KEY].items():    
+                overfit_gap = trained_models[OVERFIT_GAP_KEY][model_name]
                     
                 # compare base r2 score
                 if r2_score > base_r2_score_local and overfit_gap < base_overfit_gap:
@@ -186,10 +186,10 @@ class Model_Trainer:
             test_r2_score = best_model.score(x_test, y_test)
             
             best_model_metrics = {
-                CVAL_R2_SCORE : trained_models[CVAL_R2_SCORE][best_model_name],
-                OVERFIT_GAP : trained_models[OVERFIT_GAP][best_model_name],
-                CVAL_R2_SCORE_STD : trained_models[CVAL_R2_SCORE_STD][best_model_name],
-                TEST_R2_SCORE : test_r2_score
+                VAL_R2_KEY : trained_models[VAL_R2_KEY][best_model_name],
+                OVERFIT_GAP_KEY : trained_models[OVERFIT_GAP_KEY][best_model_name],
+                VAL_R2_STD_KEY : trained_models[VAL_R2_STD_KEY][best_model_name],
+                TEST_R2_SCORE_KEY : test_r2_score
             }
             
             # save model in model file path

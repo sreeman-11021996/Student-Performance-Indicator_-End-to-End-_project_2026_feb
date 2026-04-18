@@ -80,6 +80,7 @@ MODEL_NUMBER_KEY = 'model_serial_number'
 # Grid Search CV 
 GRID_SEARCH_RESULT_LIST_KEY = 'grid_search_result_list'
 MODEL_KEY = 'model'
+MODEL_NUMBER_STRING_KEY = 'model_'
 MEAN_TEST_R2_KEY = 'mean_test_score'
 MEAN_TRAIN_R2_KEY = 'mean_train_score'
 STD_TEST_R2_KEY = 'std_test_score'
