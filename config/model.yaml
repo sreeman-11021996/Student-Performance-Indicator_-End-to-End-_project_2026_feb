@@ -76,6 +76,11 @@ model_selection:
       random_state: 42
       n_jobs: -1
     search_param_grid:
+      criterion:
+        - squared_error
+        - friedman_mse
+        - absolute_error
+        - poisson
       n_estimators:
         - 50
         - 100
@@ -94,9 +99,13 @@ model_selection:
     module: sklearn.tree
     class: DecisionTreeRegressor
     params:
-      criterion: squared_error
       random_state: 42
     search_param_grid:
+      criterion:
+        - squared_error
+        - friedman_mse
+        - absolute_error
+        - poisson
       max_depth:
         - 3
         - 5
@@ -107,6 +116,9 @@ model_selection:
         - 1
         - 2
         - 4
+      min_samples_split:
+        - 2
+        - 5
 
   # 7. Gradient Boosting (model_6) - Boosting powerhouse
   model_6:
@@ -116,16 +128,25 @@ model_selection:
       random_state: 42
     search_param_grid:
       n_estimators:
+        - 50
         - 100
         - 200
       learning_rate:
+        - 0.001
         - 0.01
+        - 0.05
         - 0.1
-        - 0.2
       max_depth:
         - 3
         - 4
         - 5
+      subsample:
+        - 0.6
+        - 0.7
+        - 0.75
+        - 0.8
+        - 0.85
+        - 0.9
 
   # 8. AdaBoost (model_7) - Adaptive boosting
   model_7:
@@ -160,9 +181,10 @@ model_selection:
         - 5
         - 7
       learning_rate:
+        - 0.001
         - 0.01
+        - 0.05
         - 0.1
-        - 0.2
 
   # 10. CatBoost (model_9) - Categorical booster
   model_9:
@@ -171,10 +193,14 @@ model_selection:
     params:
       random_state: 42
       verbose: false
-      iterations: 200
     search_param_grid:
+      iterations:
+        - 50
+        - 100
+        - 200
       learning_rate:
         - 0.01
+        - 0.05
         - 0.1
       depth:
         - 4

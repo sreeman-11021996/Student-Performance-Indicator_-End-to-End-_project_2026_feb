@@ -83,8 +83,14 @@ class Model_Trainer:
 
                         
             # 3. return best model
-            logging.info(f"The Best Model with Grid Search best parameters : {best_model.model_detail[MODEL_NAME_KEY]}"
-                         f"\n{best_model}")            
+            logging.info(f"The Best Model with Grid Search best parameters : {best_model.model_detail[MODEL_NAME_KEY]}\n"
+                         f"------------------------\n"
+                         f"Best Model Details : {best_model.model_detail}\n"
+                         f"Best Parameters : {best_model.best_parameters}\n"
+                         f"Best Model validation r2 : {best_model.metrics[VAL_R2_KEY]:.4f}\n"
+                         f"Best Model Overfit Gap : {best_model.metrics[OVERFIT_GAP_KEY]:.4f}\n"
+                         f"------------------------\n"
+                         )
             return best_model
 
         except Exception as e:

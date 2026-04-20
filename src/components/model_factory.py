@@ -80,7 +80,7 @@ class Grid_Searched_Model:
     metrics = {'val_r2_score' : val, 'val_r2_std' : val, 'overfit_gap' : val}
     """
     model_serial_number : str
-    best_parameters : dict = field(default_factory=dict)
+    parameters : dict = field(default_factory=dict)
     metrics : dict = field(default_factory= lambda: defaultdict(float))
 
 
@@ -316,7 +316,7 @@ class Model_Factory:
                 grid_searched_model.metrics[OVERFIT_GAP_KEY] = train_r2_mean[iter] - test_r2_mean[iter]
 
                 # parameters
-                grid_searched_model.best_parameters = parameters[iter]
+                grid_searched_model.parameters = parameters[iter]
 
                 # append to Grid_Model_List
                 grid_searched_model_list.append(grid_searched_model)
@@ -375,7 +375,7 @@ class Model_Factory:
             raise CustomException(e) from e
         
         
-    # ** Optimize in create_best_model()
+        
     # 4. creating best models list 
     def create_best_model(self, model_number:str, grid_search_result:dict, base_r2=BASE_R2, 
                                      overfit_gap=OVERFIT_GAP)->Best_Model:
@@ -406,15 +406,15 @@ class Model_Factory:
             grid_models_list: List[Grid_Searched_Model] = grid_search_result[GRID_SEARCH_RESULT_LIST_KEY]
             best_model: Optional[Grid_Searched_Model] = None 
             
-            
+  
             # 2. search for the best model in list 
             for grid_model in grid_models_list:
-                
+     
                 # get the r2 score and overfit gap of the model
                 grid_model_r2 = grid_model.metrics[VAL_R2_KEY]
                 grid_model_overfit_gap = grid_model.metrics[OVERFIT_GAP_KEY]
-        
                 
+        
                 # greater r2 score wins (or) for same r2 score, lower overfit gap wins
                 if ((grid_model_r2 > local_base_r2) and (grid_model_overfit_gap < overfit_gap)) or (
                     (grid_model_r2 == local_base_r2) and (grid_model_overfit_gap < local_overfit_gap)):
@@ -447,7 +447,7 @@ class Model_Factory:
                 
                 
             # 5. get the Best_model arguments
-            best_parameters: dict = best_model.best_parameters
+            best_parameters: dict = best_model.parameters
             tuned_model = self.set_model_class_properties(model_obj=untuned_model,property_data=best_parameters)    
             metrics: dict = best_model.metrics
             
@@ -459,6 +459,7 @@ class Model_Factory:
                 best_parameters = best_parameters,
                 metrics = metrics
             )
+
             
             logging.info(f"Created the Best Model for : {best_grid_model.model_detail[MODEL_NAME_KEY]}")        
             return best_grid_model    
@@ -467,12 +468,29 @@ class Model_Factory:
             raise CustomException(e) from e
         
     def initiate_best_models_list(self, grid_search_cv_results: dict)->List[Best_Model]:
+        """Get the best model for each type of model into a list
+
+        Args:
+            grid_search_cv_results (dict): 
+                                    {
+                                        'model_1' : 
+                                        {
+                                            'model_name' : 'DecisionTree',
+                                            'model' : DecisionTreeRegressor(criterion='squared_error', min_samples_leaf=2), 
+                                            'grid_search_result_list' : [Grid_Searched_Model instances]
+                                        }
+                                    }
+
+        Returns:
+            List[Best_Model]: _description_
+        """
         try:
             logging.info(f"Starting to initialize the best models from the Grid Searched Models foe all the models")
             Grid_Searched_Best_Models_List: List[Best_Model] = []
             
             # compute the best grid models list
             for model_number, grid_search_result in grid_search_cv_results.items():
+                
                 # 1. get best grid search model
                 best_grid_model: Best_Model = self.create_best_model(model_number=model_number,
                                         grid_search_result=grid_search_result)
