@@ -1,15 +1,17 @@
 import os,sys
 from datetime import datetime
 
-
+# ........................ Config & Output ........................
 # cwd/config/config.yaml
 ROOT_DIR = os.getcwd() 
 CONFIG_DIR = 'config'
 CONFIG_FILE_NAME = 'config.yaml'
 CONFIG_FILE_PATH = os.path.join(ROOT_DIR,CONFIG_DIR,CONFIG_FILE_NAME)
 
+# ** change for the production time..
 # cwd/config/model.yaml
-MODEL_CONFIG_FILE_NAME = 'model.yaml'
+MODEL_CONFIG_FILE_NAME = 'model_easy.yaml'  # easy computation
+# MODEL_CONFIG_FILE_NAME = 'model.yaml'
 
 # time_stamp
 CURRENT_TIME_STAMP = f"{datetime.now().strftime('%Y-%m-%d__%H-%M-%S')}"
@@ -62,7 +64,7 @@ BASE_OVERFIT_GAP = 0.1
 # ........................ Model Factory ........................
 
 # Model Factory files
-MODEL_CONFIG_FILENAME = 'model.yaml'
+# MODEL_CONFIG_FILENAME = 'model.yaml'
 
 # Model Factory keys
 GRID_SEARCH_KEY = 'grid_search'

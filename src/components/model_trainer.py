@@ -68,25 +68,24 @@ class Model_Trainer:
         self.data_transformation_arifact = data_transformation_artifact
         self.model_trainer_config = Model_Trainer_Config()
     
-    
+
+# 1. Calculating the Best_Model List    
     @staticmethod
-    def kfold_calculate_metrics(x_train:np.ndarray, y_train:np.ndarray, models:dict)-> dict:
+    def kfold_calculate_metrics(x_train:np.ndarray, y_train:np.ndarray, models:dict)-> List[Best_Model]:
         """
         Arguments : models = {'linear_reg' : LinearRegression(), ...}
             
-        Return : trained_models_report = {
-            'cval_r2_score' : {'linear_reg' : .., ...},
-            'overfit_gap' : {...},
-            'cval_r2_score_std' : ...
-            }
+        Return : untrained_model_list = [Best_Model]
+                >>> Best_Model = (model_name, untrained_model {like DecisionTreeRegressor()}, metrics dictionary)
         """
         try:
-            # set up the report dictionary
-            trained_models_report = defaultdict(lambda: defaultdict(float))
-                
+            untrained_model_list: List[Best_Model] = []    
             logging.info(f"Starting the kfold cross validation on models : {models.keys()}")
             # loop all the models
             for model_name, model in models.items():
+                
+                # save the untrained model
+                untrained_model = model
                     
                 # kfold cross validation
                 kf = KFold(n_splits=5, random_state=42, shuffle=True)
@@ -123,105 +122,23 @@ class Model_Trainer:
                 cval_r2_std = np.std(cval_r2_scores)
     
                     
-                # store metrics in model report
-                trained_models_report[VAL_R2_KEY][model_name] = float(cval_r2_mean)
-                trained_models_report[OVERFIT_GAP_KEY][model_name] = float(overfit_gap)
-                trained_models_report[VAL_R2_STD_KEY][model_name] = float(cval_r2_std)
-                    
-                logging.info(f"\nmodel name : {model_name}"
-                            f"\ncval r2 mean : {cval_r2_mean}, {trained_models_report[VAL_R2_KEY][model_name]}"
-                            f"\noverfit gap : {overfit_gap}, {trained_models_report[OVERFIT_GAP_KEY][model_name]}"
-                            f"\ncval r2 std : {cval_r2_std}, {trained_models_report[VAL_R2_STD_KEY][model_name]}")  
+                # create the Best_Model instance for th model
+                best_model = Best_Model(
+                    model_name = model_name,
+                    untrained_model = untrained_model,
+                    metrics = {VAL_R2_KEY: cval_r2_mean, OVERFIT_GAP_KEY: overfit_gap, VAL_R2_STD_KEY: cval_r2_std}, 
+                ) 
+
+                untrained_model_list.append(best_model)    
+                logging.info(f"\nmodel name : {best_model.model_name}"
+                            f"\nmodel metrics : {best_model.metrics}"
+                            f"\nuntrained model : {best_model.untrained_model}")  
                 
             logging.info(f"Completed the training of models and generated the model report")    
-            return trained_models_report
+            return untrained_model_list
             
         except Exception as e:
             raise CustomException(e) from None    
-        
-        
-    @staticmethod
-    def get_best_model_name (trained_models:dict, base_r2_score= BASE_R2_SCORE, 
-                       base_overfit_gap= BASE_OVERFIT_GAP)-> str:
-        """
-        Arguments : trained_models = {
-            'models' : {'linear_reg' : linear model, ...},
-            'val_r2_score' : {'linear_reg' : .., ...},
-            'overfit_gap' : {...},
-            'val_r2_std' : {...}
-            }
-                
-        Return : best_model_name : str
-        """
-
-        try:         
-            best_model_name : str = ''
-            base_r2_score_local = base_r2_score
-                
-            for model_name, r2_score in trained_models[VAL_R2_KEY].items():    
-                overfit_gap = trained_models[OVERFIT_GAP_KEY][model_name]
-                    
-                # compare base r2 score
-                if r2_score > base_r2_score_local and overfit_gap < base_overfit_gap:
-                    base_r2_score_local = r2_score
-                    best_model_name = model_name
-                        
-            # return best model
-            logging.info(f"Returning the best model name from list of trained models")
-            logging.info(f"The Best Trained Model : {best_model_name}")
-            return best_model_name
-
-        except Exception as e:
-            raise CustomException(e) from None
-
-
-    def create_model_trainer_artifact(self, best_model:Any, trained_models:dict, best_model_name:str, 
-                                      x_train:np.ndarray, y_train:np.ndarray, 
-                                      x_test:np.ndarray, y_test: np.ndarray)-> Model_Trainer_Artifact:
-        """  
-        Arguments :
-            best_model : Any sklearn-compatible regressor (LinearRegression, XGBoost, CatBoost, etc.) 
-            with .fit/.predict/.score()
-        
-        Returns:
-            Model_Trainer_Artifact: 
-                trained_model_metrics = {'r2_score' : 0.0, 'overfit_gap' : 0.0, 
-                'cval_r2_score_std' : 0.0, 'test_r2_score' : 0.0}
-        """
-        try:
-            # train the best model
-            best_model.fit(x_train, y_train)
-            
-            # test the best model and save metrics
-            test_r2_score = best_model.score(x_test, y_test)
-            
-            best_model_metrics = {
-                VAL_R2_KEY : trained_models[VAL_R2_KEY][best_model_name],
-                OVERFIT_GAP_KEY : trained_models[OVERFIT_GAP_KEY][best_model_name],
-                VAL_R2_STD_KEY : trained_models[VAL_R2_STD_KEY][best_model_name],
-                TEST_R2_SCORE_KEY : test_r2_score
-            }
-            
-            # save model in model file path
-            best_model_file_path = self.model_trainer_config.trained_model_file_path
-            save_object(object = best_model, file_path = best_model_file_path)
-            logging.info(f"Saved the model in {best_model_file_path}")
-            
-            # create model trainer artifact
-            model_trainer_artifact = Model_Trainer_Artifact(
-                trained_model_name = best_model_name,
-                trained_model_file_path = best_model_file_path,
-                trained_model_metrics = best_model_metrics
-            )
-            logging.info("Created the Model Trainer Artifact") 
-            return model_trainer_artifact
-        
-        except Exception as e:
-            raise CustomException(e) from None
-
-
-
-# with grid search and best model class
 
     @staticmethod
     def grid_search_calculate_best_metrics(x_train:np.ndarray, y_train: np.ndarray, models:dict, params:dict)-> List[Best_Model]:
@@ -272,6 +189,9 @@ class Model_Trainer:
         except Exception as e:
             raise CustomException(e) from None
 
+
+
+# 2. Get me the model with the best r2 score
     @staticmethod
     def get_best_model(best_model_list:List[Best_Model], base_r2_score= BASE_R2_SCORE, 
                        base_overfit_gap= BASE_OVERFIT_GAP)->Optional[Best_Model]:
@@ -297,8 +217,10 @@ class Model_Trainer:
         
         except Exception as e:
             raise CustomException(e) from None
+
             
             
+# 3. Returns Model Trainer Artifact 
     def create_model_trainer_artifact_new(self, best_model:Optional[Best_Model], x_train:np.ndarray, y_train:np.ndarray, 
                                       x_test:np.ndarray, y_test: np.ndarray)-> Model_Trainer_Artifact:
         try:
@@ -425,10 +347,10 @@ class Model_Trainer:
             }
             
             
-            # evaluate the models dict
+            # Get the List of Best Models 
             logging.info(f"Start evaluation of all the models")
             best_models_list: List[Best_Model] = self.grid_search_calculate_best_metrics(x_train=x_train, y_train=y_train, 
-                                                                            models=models, params=params)
+                                                                              models=models, params=params)
             
             # get best model name
             logging.info("Start the best model comparision")

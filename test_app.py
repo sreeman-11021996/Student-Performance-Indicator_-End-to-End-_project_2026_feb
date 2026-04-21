@@ -1,6 +1,6 @@
 from src.components.data_ingestion import Data_Ingestion
 from src.components.data_transformation import Data_Transformation
-from src.components.model_trainer import Model_Trainer
+from src.components.model_trainer_auto import Model_Trainer 
 
 
 
@@ -41,4 +41,5 @@ if __name__ == "__main__":
       
       # 4. Model Factory
 
+      # ** CHange src.constants.py for production!!!!
     

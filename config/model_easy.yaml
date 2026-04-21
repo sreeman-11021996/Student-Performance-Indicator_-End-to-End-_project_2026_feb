@@ -1,0 +1,38 @@
+# model.yaml - Student Performance Indicator (End-to-End ML Project)
+# ================================================================
+# Predicts student scores using 10 regression models with GridSearchCV
+# Compatible with your ModelFactory pipeline
+
+grid_search:
+  module: sklearn.model_selection
+  class: GridSearchCV
+  params:
+    cv: 5                    # 5-fold CV for robust student data
+    verbose: 1               # Progress tracking
+    n_jobs: -1               # single processing
+    return_train_score: true # Overfitting detection
+    scoring: r2              # r2 scores
+
+model_selection:
+  # 1. Linear Regression (model_0) - Simple baseline
+  model_0:
+    module: sklearn.linear_model
+    class: LinearRegression
+    search_param_grid:
+      fit_intercept:
+        - true
+        - false
+
+  # 2. Ridge Regression (model_1) - L2 regularization
+  model_1:
+    module: sklearn.linear_model
+    class: Ridge
+    search_param_grid:
+      alpha:
+        - 0.1
+        - 1.0
+        - 10.0
+      solver:
+        - auto
+        - svd
+        - cholesky
