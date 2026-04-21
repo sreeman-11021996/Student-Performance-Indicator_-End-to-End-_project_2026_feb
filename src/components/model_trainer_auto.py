@@ -9,7 +9,7 @@ from src.exception import CustomException
 from src.constants import *
 from src.utils import save_object, get_train_and_test_arrays
 from src.components.data_transformation import Data_Transformation_Artifact
-from src.components.model_factory import Model_Factory, Best_Model 
+from src.model_factory import Model_Factory, Best_Model 
 
 # data operation
 import numpy as np

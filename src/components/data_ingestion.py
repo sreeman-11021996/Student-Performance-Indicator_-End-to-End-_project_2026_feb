@@ -32,11 +32,11 @@ class Data_Ingestion:
     def __init__(self):
         self.data_ingestion_config = Data_Ingestion_Config()
     
-    def initiate_data_ingestion(self)-> Data_Ingestion_Artifact:
+    def initiate_data_ingestion(self, data_file_path:str = DATA_FILE_PATH)-> Data_Ingestion_Artifact:
         logging.info("Entered the data ingestion method or component")
         try:
             # read data
-            df = pd.read_csv(DATA_FILE_PATH)
+            df = pd.read_csv(data_file_path)
             logging.info("Read the dataset as a DataFrame")
             
             # create the directories
